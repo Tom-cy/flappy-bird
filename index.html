@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="initial-scale=1,minimum-scale=1" />
+
+    <style>
+        *{
+            padding: 0;margin: 0;
+        }
+        canvas{
+            display: block;
+            border: 1px solid #000;
+            margin: 0 auto;
+
+        }
+    </style>
+</head>
+<canvas id="canvas" width="360" height="512"></canvas>
+
+<body>
+    <script type="text/javascript" src="js/Background.js"></script>
+    <script type="text/javascript" src="js/Bird.js"></script>
+    <script type="text/javascript" src="js/Game.js"></script>
+    <script type="text/javascript" src="js/Pipe.js"></script>
+    <script type="text/javascript" src="js/Gold.js"></script>
+    <script>
+        var imgArr = ["images/bird0_0.png", "images/bird0_1.png", "images/bird0_2.png", "images/bg_day.png",
+            "images/land.png", "images/pipe_down.png", "images/pipe_up.png ", "images/gold.png", "images/gold1.png",
+            "images/gold2.png" 
+        ]
+
+        loadImage(imgArr, function (imgArr) {
+
+            var canvas = document.getElementById("canvas");
+            //   游戏类
+            var ctx = canvas.getContext("2d");
+            // 鸟
+            var bird = new Bird(imgArr.slice(0, 3), 100, 100);
+            // 管子实例
+            var pipe = new Pipe(imgArr[5], imgArr[6], 4, 360);
+            // 地面
+            var land = new Background(imgArr[4], 4, 0, 400);
+            // 山
+            var mountain = new Background(imgArr[3], 2, 0, 0);
+
+            var gold = new Gold(imgArr[7], imgArr[8],imgArr[9], 3, 360);
+            window.g = new Game(ctx, bird, pipe, land, mountain, gold);
+        })
+
+        /**
+         * loadImage 用于加载图片 ，并且当所有图片加载完毕之后 执行回调函数
+         * @arr 数组图片
+         * @callback 回调函数
+         **/
+
+        // 加载图片
+        function loadImage(arr, callback) {
+            var idx = 0;
+            var loadImageArr = [];
+
+
+            arr.forEach(function (value, index) {
+                // 创建图片元素
+                var img = new Image();
+                // 设置路径
+                img.src = value;
+                // 添加事件
+                img.onload = function () {
+                    idx++;
+                    // 将加载后的图片放入数组中
+                    // 因为load时间的加载顺序不一致，所以我们使用索引值来保证加载顺序
+                    loadImageArr[index] = this;
+
+                    if (idx === arr.length) {
+                        callback(loadImageArr);
+                    }
+                }
+            })
+
+        }
+    </script>
+</body>
+
+</html>
